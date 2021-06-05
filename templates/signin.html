@@ -42,6 +42,17 @@
     <center>
       <form method = 'post'>  
         <h1 id='h1'>Авторизация</h1><br>
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <center>
+                <ul class=flashes>
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+                </ul>
+                </center>
+            {% endif %}
+          {% endwith %}
             <input placeholder = 'Введите логин' id="username" name="username" class="form-control form-control-lg"></input><br>
             <input placeholder = 'Введите пароль' type="password" id="password" name="password" class="form-control form-control-lg"></input><br>
             <button id="show">Войти</button><br><br>

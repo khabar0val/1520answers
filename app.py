@@ -53,9 +53,9 @@ def login_page():
 
             return redirect('/home')
         else:
-            print('Login or password is not correct')
+            flash('Login or password is not correct')
     else:
-        print('Please fill login and password fields')
+        flash('Please fill login and password fields')
 
     return render_template('signin.html')
 
