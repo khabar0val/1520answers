@@ -12,6 +12,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 
+# Creating a table named Article
 class Article(db.Model):
     __tablename__ = 'articles'
 
@@ -27,6 +28,7 @@ class Article(db.Model):
     def __repr__(self):
         return '<Article %r>' % self.phio
 
+# Creating a table named User
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer(), primary_key=True)
@@ -36,12 +38,15 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return "<{}:{}>".format(self.id, self.username)
 
+# Initialization in flask_login
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.query(User).get(user_id)
 
+# Login
 @app.route('/', methods=['GET', 'POST'])
 def login_page():
+    # Get info from form
     username = request.form.get('username')
     password = request.form.get('password')
 
@@ -52,16 +57,19 @@ def login_page():
             login_user(user)
 
             return redirect('/home')
+
         else:
             flash('Login or password is not correct')
+
     else:
         flash('Please fill login and password fields')
 
     return render_template('signin.html')
 
-
+# Registration
 @app.route('/signup', methods=['GET', 'POST'])
 def register():
+        # Get info from form
         username = request.form.get('username')
         password = request.form.get('password')
 
@@ -79,16 +87,20 @@ def register():
 
         return render_template('signup.html')
 
+# Main page(answers)
 @app.route('/home', methods = ['POST', 'GET'])
 def home():
     if request.method == 'POST':
+        # Get answers from form
         phio = request.form['phio']
         classes = request.form['classes']
         answers = request.form['answers']
 
+        # Put answers into answer's db
         article = Article(phio=phio, classes=classes, answers=answers)
 
         try:
+            # Commit session
             db.session.add(article)
             db.session.commit()
             return redirect('/done')
@@ -98,10 +110,12 @@ def home():
     else:
         return render_template('index.html')
 
+# Done page
 @app.route('/done')
 def done():
     return render_template('done.html')
 
+# RUN
 if __name__ == "__main__":
 
     app.debug = True
